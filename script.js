@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let mockDaysData = [
         {
-            id: 'day1', dayNumberText: 'Day I', title: 'Arrival & Pink City Wonders',
+            id: 'day1', dayNumberText: 'Day 1', title: 'Arrival & Pink City Wonders',
             image: 'https://images.unsplash.com/photo-1705861145876-2efd5e0392a5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             activities: [
                 { id: 'act1-1', time: '14:00', description: 'Check into hotel & freshen up', icon: 'fas fa-bed' },
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         {
-            id: 'day2', dayNumberText: 'Day II', title: 'Majestic Forts & Sunset Views',
+            id: 'day2', dayNumberText: 'Day 2', title: 'Majestic Forts & Sunset Views',
             image: 'https://plus.unsplash.com/premium_photo-1661962387472-553d96ed01a3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             activities: [
                 { id: 'act2-1', time: '09:00', description: 'Tour Amber Fort (Amer Fort)', icon: 'fas fa-chess-rook' },
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         {
-            id: 'day3', dayNumberText: 'Day III', title: 'Water Palaces & Local Flavors',
+            id: 'day3', dayNumberText: 'Day 3', title: 'Water Palaces & Local Flavors',
             image: 'https://plus.unsplash.com/premium_photo-1697730286559-98b1a193eef6?q=80&w=2036&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             activities: [
                 { id: 'act3-1', time: '10:00', description: 'Photo stop at Jal Mahal', icon: 'fas fa-camera-retro' },
@@ -460,11 +460,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function addDay() {
         const newDayNumber = mockDaysData.length + 1;
-        const romanDayNumber = toRoman(newDayNumber);
 
         const newDayTitle = await showModal('prompt',
-            `Add New Day (Day ${romanDayNumber})`,
-            `Let's plan Day ${romanDayNumber}! What will be its theme or title?`,
+            `Add New Day (Day ${newDayNumber})`,
+            `Let's plan Day ${newDayNumber}! What will be its theme or title?`,
             { defaultValue: "New Adventures", inputLabel: 'Day Title:', confirmText: 'Create Day' }
         );
 
@@ -480,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newDayId = `day${Date.now()}`;
         mockDaysData.push({
             id: newDayId,
-            dayNumberText: `Day ${romanDayNumber}`,
+            dayNumberText: `Day ${newDayNumber}`,
             title: newDayTitle.trim(),
             image: newImage,
             activities: []
@@ -502,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mockDaysData = mockDaysData.filter(day => day.id !== dayIdToDelete);
         mockDaysData.forEach((day, index) => {
-            day.dayNumberText = `Day ${toRoman(index + 1)}`;
+            day.dayNumberText = `Day ${index + 1}`;
         });
         renderItinerary();
     }
@@ -547,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `Current time: ${activity.time}. Enter new time:`,
             { inputLabel: 'New Time (e.g., 10:00 AM):', defaultValue: activity.time, inputType: 'time', confirmText: 'Next' }
         );
-        if (newTime === false || newTime === null) return; // User cancelled
+        if (newTime === false || newTime === null) return;
         if (newTime.trim() === "") { await showModal('alert', 'Missing Time', 'Please provide a time for the activity.'); return; }
 
 
@@ -581,18 +580,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         day.activities = day.activities.filter(act => act.id !== activityIdToDelete);
         renderSingleDayActivities(dayId);
-    }
-
-    function toRoman(num) {
-        if (num < 1) return num.toString();
-        const roman = {M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1};
-        let str = '';
-        for (let i of Object.keys(roman)) {
-            let q = Math.floor(num / roman[i]);
-            num -= q * roman[i];
-            str += i.repeat(q);
-        }
-        return str || num.toString();
     }
 
     if (addDayBtn) addDayBtn.addEventListener('click', addDay);
