@@ -1,23 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Itinerary Board - Jaipur Edition</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">    
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&family=Kalam:wght@300;400;700&family=Roboto+Condensed:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="desk-background">
+      <div class="desk-item compass-rose-bg">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle
+            cx="50"
+            cy="50"
+            r="48"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+          <polygon
+            points="50,10 55,50 50,90 45,50"
+            fill="currentColor"
+            opacity="0.7"
+          />
+          <polygon
+            points="10,50 50,55 90,50 50,45"
+            fill="currentColor"
+            opacity="0.7"
+          />
+          <polygon
+            points="22,22 50,40 40,50"
+            fill="currentColor"
+            transform="rotate(45 50 50)"
+            opacity="0.5"
+          />
+          <polygon
+            points="78,22 50,40 60,50"
+            fill="currentColor"
+            transform="rotate(135 50 50)"
+            opacity="0.5"
+          />
+          <polygon
+            points="22,78 50,60 40,50"
+            fill="currentColor"
+            transform="rotate(225 50 50)"
+            opacity="0.5"
+          />
+          <polygon
+            points="78,78 50,60 60,50"
+            fill="currentColor"
+            transform="rotate(315 50 50)"
+            opacity="0.5"
+          />
+          <circle cx="50" cy="50" r="5" fill="currentColor" opacity="0.8" />
+        </svg>
+      </div>
+      <div class="desk-item coffee-stain-bg">
+        <div class="stain-ring"></div>
+        <div class="stain-drip1"></div>
+        <div class="stain-drip2"></div>
+      </div>
+    </div>
 
-            <header class="journal-header">
-            <h1 class="journal-title">Chronicles <span class="ampersand">&</span> Cartography</h1>
-            <p class="journal-subtitle">Map out your Jaipur memories.</p>
-        </header>
+    <div class="journal-wrapper">
+      <header class="journal-header">
+        <h1 class="journal-title">
+          Chronicles <span class="ampersand">&</span> Cartography
+        </h1>
+        <p class="journal-subtitle">Map out your Jaipur memories.</p>
+      </header>
 
-    <footer>
-        <p> Created with <i class="fas fa-heart"></i> by <a href="https://x.com/abhaysinghr1" target="_blank">Abhay Singh Rathore</a></p>
-    </footer>
+      <main id="itinerary-board" class="itinerary-board">
+        <!-- Dynamically generated day "pages" -->
+      </main>
 
+      <div class="itinerary-controls">
+        <button id="add-day-btn" class="control-btn">
+          <i class="fas fa-calendar-plus"></i> Add New Day
+        </button>
+      </div>
+
+      <footer class="journal-footer">
+        <p>
+          Created with <i class="fas fa-heart"></i> by
+          <a href="https://x.com/abhaysinghr1" target="_blank"
+            >Abhay Singh Rathore</a
+          >
+        </p>
+      </footer>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="custom-modal-overlay" class="modal-overlay hidden">
+      <div id="custom-modal" class="modal-dialog">
+        <button id="modal-close-btn" class="modal-close-icon" title="Close">
+          ×
+        </button>
+        <h3 id="modal-title" class="modal-title-text">Modal Title</h3>
+        <div id="modal-message-container">
+          <p id="modal-message" class="modal-message-text">
+            Modal message here.
+          </p>
+        </div>
+        <div id="modal-input-container" class="modal-input-area hidden">
+          <label id="modal-input-label" for="modal-input-field">Input:</label>
+          <input type="text" id="modal-input-field" class="modal-input" />
+        </div>
+        <div id="modal-icon-picker-container" class="modal-icon-picker hidden">
+          <!-- Icons will be dynamically added -->
+        </div>
+        <div id="modal-buttons" class="modal-button-container">
+          <button id="modal-confirm-btn" class="modal-btn modal-btn-confirm">
+            OK
+          </button>
+          <button id="modal-cancel-btn" class="modal-btn modal-btn-cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
