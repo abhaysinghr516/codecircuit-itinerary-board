@@ -108,8 +108,7 @@ body::before {
     max-width: 1400px; margin: 40px auto;
     background-color: var(--color-aged-paper); background-image: var(--texture-paper);
     padding: clamp(30px, 5vw, 50px); border-radius: 3px 10px 10px 3px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 10px 10px 30px var(--color-shadow-deep),
-                0 0 0 10px var(--color-leather-brown);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 10px 10px 30px var(--color-shadow-deep);
     position: relative; border: 1px solid #d3c9bc;
 }
 .journal-wrapper::before {
@@ -465,7 +464,7 @@ body::before {
 
 .activity-item.dragging {
     opacity: 0.85 !important; background: #fff8e8 !important;
-    box-shadow: var(--shadow-deep), 0 0 0 2px var(--color-antique-gold) !important;
+    box-shadow: var(--shadow-deep);
     transform: rotateY(-10deg) rotateZ(3deg) scale(1.06) !important;
     border-color: transparent !important; z-index: 1000;
 }
@@ -572,7 +571,7 @@ body::before {
     background-image: var(--texture-paper);
     padding: 30px 35px;
     border-radius: 5px;
-    box-shadow: var(--shadow-lifted), 0 0 0 5px var(--color-leather-brown);
+    box-shadow: var(--shadow-lifted);
     border: 1px solid #d3c9bc;
     width: 90%;
     max-width: 480px;
