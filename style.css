@@ -136,7 +136,6 @@ body::before {
     background-image: var(--texture-paper);
 }
 
-/* Cover-specific header styles */
 .cover-vintage .journal-header {
     border-bottom: 1px solid #c0b091;
 }
@@ -254,6 +253,7 @@ body::before {
     position: relative;
     min-height: 250px;
     padding-bottom: 20px;
+    perspective: 1200px;
 }
 
 @media (min-width: 600px) {
@@ -288,16 +288,11 @@ body::before {
     max-width: 450px;
 }
 
-@keyframes dayPageEntry {
-    from { opacity: 0; transform: translateY(40px) rotateX(-20deg) scale(0.9); }
-    to   { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); }
-}
 .day-card {
     background-color: #faf6ef; background-image: var(--texture-subtle-noise);
     border: 1px solid #e0d8cc; border-radius: 3px;
     box-shadow: var(--shadow-medium), 0 1px 1px var(--color-shadow-light);
     padding: 20px 25px; display: flex; flex-direction: column; position: relative;
-    opacity: 0; animation: dayPageEntry 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
     transform-style: preserve-3d;
     transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
     min-width: 0;
@@ -330,6 +325,42 @@ body::before {
     --day-context-solid-color: var(--theme-color-4-solid);
     --day-context-label-bg: var(--theme-color-4-solid);
 }
+
+@keyframes placePageIn {
+    from {
+        opacity: 0;
+        transform: translateY(-40px) scale(0.9) rotateX(25deg);
+        transform-origin: bottom center;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0deg);
+        transform-origin: bottom center;
+    }
+}
+
+.day-card.animate-place-in {
+    opacity: 0; 
+    animation: placePageIn 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+@keyframes liftPageOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0deg) rotateZ(0deg);
+        transform-origin: center center;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-60px) scale(0.8) rotateX(30deg) rotateZ(5deg);
+        transform-origin: center center;
+    }
+}
+
+.day-card.animate-lift-out {
+    animation: liftPageOut 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
 
 .day-card:hover {
     transform: translateY(-8px) rotateZ(-0.8deg) scale(1.02);
@@ -918,7 +949,6 @@ body::before {
     .day-card:hover .day-title-theme h2::after { width: 75%; }
 }
 
-/* Cover style change animation */
 @keyframes coverChange {
     0% { opacity: 0.95; transform: scale(0.995); }
     50% { opacity: 0.98; transform: scale(1.003); }

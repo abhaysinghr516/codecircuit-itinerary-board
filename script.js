@@ -208,9 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderItinerary() {
         itineraryBoard.innerHTML = '';
         if (mockDaysData.length > 0) {
-            mockDaysData.forEach((dayData, index) => {
+            mockDaysData.forEach((dayData) => {
                 const dayCard = createDayCardElement(dayData);
-                dayCard.style.animationDelay = `${index * 100}ms`;
                 itineraryBoard.appendChild(dayCard);
             });
         }
@@ -496,33 +495,59 @@ document.addEventListener('DOMContentLoaded', () => {
         nextNewDayImageIndex++;
 
         const newDayId = `day${Date.now()}`;
-        mockDaysData.push({
+        const newDayData = {
             id: newDayId,
             dayNumberText: `Day ${newDayNumber}`,
             title: newDayTitle.trim(),
             image: newImage,
             activities: []
-        });
-        renderItinerary();
+        };
+        mockDaysData.push(newDayData);
+        
+        const newDayCardElement = createDayCardElement(newDayData);
+        itineraryBoard.appendChild(newDayCardElement);
+        
+        newDayCardElement.classList.add('animate-place-in');
+        newDayCardElement.addEventListener('animationend', () => {
+            newDayCardElement.classList.remove('animate-place-in');
+        }, { once: true });
     }
 
     async function deleteDay(dayIdToDelete) {
-        const dayToDelete = mockDaysData.find(d => d.id === dayIdToDelete);
-        if (!dayToDelete) return;
+        const dayToDeleteData = mockDaysData.find(d => d.id === dayIdToDelete);
+        if (!dayToDeleteData) return;
+
+        const dayCardElement = itineraryBoard.querySelector(`.day-card[data-day-id="${dayIdToDelete}"]`);
+        if (!dayCardElement) return;
 
         const confirmed = await showModal('confirm',
-            `Delete ${dayToDelete.dayNumberText}: ${dayToDelete.title}?`,
+            `Delete ${dayToDeleteData.dayNumberText}: ${dayToDeleteData.title}?`,
             `Are you absolutely sure you want to remove this entire day and all its planned activities? This action cannot be undone.`,
             { confirmText: 'Yes, Delete Day', cancelText: 'No, Keep It' }
         );
 
         if (!confirmed) return;
 
-        mockDaysData = mockDaysData.filter(day => day.id !== dayIdToDelete);
-        mockDaysData.forEach((day, index) => {
-            day.dayNumberText = `Day ${index + 1}`;
-        });
-        renderItinerary();
+        dayCardElement.classList.add('animate-lift-out');
+        dayCardElement.addEventListener('animationend', () => {
+            dayCardElement.remove(); 
+            mockDaysData = mockDaysData.filter(day => day.id !== dayIdToDelete);
+            
+            mockDaysData.forEach((day, index) => {
+                day.dayNumberText = `Day ${index + 1}`;
+                const remainingDayCard = itineraryBoard.querySelector(`.day-card[data-day-id="${day.id}"]`);
+                if (remainingDayCard) {
+                    const dayNumberLabel = remainingDayCard.querySelector('.day-number-label');
+                    if (dayNumberLabel) {
+                        dayNumberLabel.textContent = day.dayNumberText;
+                    }
+                }
+            });
+             if (mockDaysData.length === 0) {
+                renderItinerary(); 
+            }
+
+        }, { once: true });
     }
 
     async function addActivityToDay(dayId) {
