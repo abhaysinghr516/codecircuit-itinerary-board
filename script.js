@@ -3,20 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const addDayBtn = document.getElementById('add-day-btn');
     const coverStyleSelector = document.getElementById('cover-style-selector');
     const journalWrapper = document.querySelector('.journal-wrapper');
+    const localTipBox = document.getElementById('local-tip-box');
+    const localTipTextEl = document.getElementById('local-tip-text');
+    const closeTipBtn = document.getElementById('close-tip-btn');
+
     let draggedActivityElement = null;
     let sourceDayId = null;
     let sourceActivityId = null;
     let activityPlaceholder = null;
     let currentOverList = null;
-      coverStyleSelector.addEventListener('change', (e) => {
+
+    coverStyleSelector.addEventListener('change', (e) => {
         journalWrapper.classList.add('cover-changing');
-        
         journalWrapper.classList.remove('cover-default', 'cover-vintage', 'cover-modern');
-        
         journalWrapper.classList.add(`cover-${e.target.value}`);
-        
         localStorage.setItem('preferred-cover-style', e.target.value);
-        
         setTimeout(() => {
             journalWrapper.classList.remove('cover-changing');
         }, 500);
@@ -25,33 +26,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedCoverStyle = localStorage.getItem('preferred-cover-style') || 'default';
     coverStyleSelector.value = savedCoverStyle;
     journalWrapper.classList.add(`cover-${savedCoverStyle}`);
+    
+    const localTipsData = [
+        "Always carry a bottle of water, especially during hotter months.",
+        "Bargaining is common in local markets, but do it politely.",
+        "Dress modestly, especially when visiting religious sites (cover shoulders and knees).",
+        "Tipping is appreciated for good service (around 10% in restaurants).",
+        "Ask for permission before photographing people.",
+        "Jaipur is known for its block prints and gemstones.",
+        "Try 'Lassi' at Lassiwala on M.I. Road for a refreshing drink.",
+        "Rickshaws and ride-hailing apps are convenient for getting around.",
+        "Learn a few basic Hindi phrases like 'Namaste' (Hello) and 'Dhanyawad' (Thank you).",
+        "Be aware of your surroundings, especially in crowded places.",
+        "When visiting Amber Fort, the light and sound show in the evening is spectacular.",
+        "For City Palace, the audio guide is very informative.",
+        "Remove shoes before entering temples or homes.",
+        "Public displays of affection are generally frowned upon.",
+        "If offered tea or food by locals, it's polite to accept."
+    ];
+    
+    const defaultMoods = ['😊', '🤩', '🤔', '😌', '💖'];
+
 
     let mockDaysData = [
         {
             id: 'day1', dayNumberText: 'Day 1', title: 'Arrival & Pink City Wonders',
             image: 'https://images.unsplash.com/photo-1705861145876-2efd5e0392a5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             activities: [
-                { id: 'act1-1', time: '14:00', description: 'Check into hotel & freshen up', icon: 'fas fa-bed' },
-                { id: 'act1-2', time: '16:00', description: 'Visit Hawa Mahal (Palace of Winds)', icon: 'fas fa-wind' },
-                { id: 'act1-3', time: '18:00', description: 'Explore City Palace complex', icon: 'fas fa-landmark-dome' }
+                { id: 'act1-1', time: '14:00', description: 'Check into hotel & freshen up', icon: 'fas fa-bed', locationName: '', hindiPhrase: "आराम करें (Aaraam karein)", pronunciation: "Aa-raam ka-rein - Relax", memory: "", mood: "" },
+                { id: 'act1-2', time: '16:00', description: 'Visit Hawa Mahal', icon: 'fas fa-wind', locationName: 'Hawa Mahal', hindiPhrase: "यह सुंदर है (Yeh sundar hai)", pronunciation: "Yeh sun-dar hai - It's beautiful", memory: "The intricate facade was breathtaking, especially in the afternoon light. So many windows!", mood: "🤩" },
+                { id: 'act1-3', time: '18:00', description: 'Explore City Palace complex', icon: 'fas fa-landmark-dome', locationName: 'City Palace', hindiPhrase: "इतिहास (Itihaas)", pronunciation: "It-ee-haas - History", memory: "", mood: "" }
             ]
         },
         {
             id: 'day2', dayNumberText: 'Day 2', title: 'Majestic Forts & Sunset Views',
             image: 'https://plus.unsplash.com/premium_photo-1661962387472-553d96ed01a3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             activities: [
-                { id: 'act2-1', time: '09:00', description: 'Tour Amber Fort (Amer Fort)', icon: 'fas fa-chess-rook' },
-                { id: 'act2-2', time: '13:00', description: 'Lunch with a view of Jaigarh Fort', icon: 'fas fa-utensils' },
-                { id: 'act2-3', time: '16:30', description: 'Sunset at Nahargarh Fort', icon: 'fas fa-mountain-sun' },
+                { id: 'act2-1', time: '09:00', description: 'Tour Amber Fort (Amer Fort)', icon: 'fas fa-chess-rook', locationName: 'Amber Fort', hindiPhrase: "ऊपर चढ़ो (Upar chadho)", pronunciation: "Oo-par cha-dho - Climb up", memory: "The elephant ride was an experience, and the Sheesh Mahal (Mirror Palace) was stunning.", mood: "💖" },
+                { id: 'act2-2', time: '13:00', description: 'Lunch with a view', icon: 'fas fa-utensils', locationName: 'Restaurant near Amber', hindiPhrase: "स्वादिष्ट भोजन (Swaadisht bhojan)", pronunciation: "Swaa-disht bho-jan - Delicious food", memory: "", mood: "" },
+                { id: 'act2-3', time: '16:30', description: 'Sunset at Nahargarh Fort', icon: 'fas fa-mountain-sun', locationName: 'Nahargarh Fort', hindiPhrase: "सूर्यास्त (Sooryaast)", pronunciation: "Soor-yaast - Sunset", memory: "The city looked golden from above. A very peaceful moment.", mood: "😌" },
             ]
         },
         {
-            id: 'day3', dayNumberText: 'Day 3', title: 'Water Palaces & Local Flavors',
+            id: 'day3', dayNumberText: 'Day 3', title: 'Markets & Local Culture',
             image: 'https://plus.unsplash.com/premium_photo-1697730286559-98b1a193eef6?q=80&w=2036&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             activities: [
-                { id: 'act3-1', time: '10:00', description: 'Photo stop at Jal Mahal', icon: 'fas fa-camera-retro' },
-                { id: 'act3-2', time: '11:30', description: 'Shopping in Johari Bazaar', icon: 'fas fa-shopping-bag' },
-                { id: 'act3-3', time: '19:00', description: 'Cultural evening at Chokhi Dhani', icon: 'fas fa-masks-theater' },
+                { id: 'act3-1', time: '10:00', description: 'Shopping at Johari Bazaar', icon: 'fas fa-shopping-bag', locationName: 'Johari Bazaar', hindiPhrase: "कितने का है? (Kitne ka hai?)", pronunciation: "Kit-nay kaa hai? - How much is this?", memory: "", mood: "" },
+                { id: 'act3-2', time: '13:00', description: 'Try local street food', icon: 'fas fa-pepper-hot', locationName: 'Street Food Stall', hindiPhrase: "तीखा (Teekha)", pronunciation: "Tee-khaa - Spicy", memory: "Pyaaz kachori was amazing!", mood: "😊" },
+                { id: 'act3-3', time: '17:00', description: 'Visit Albert Hall Museum', icon: 'fas fa-landmark-dome', locationName: 'Albert Hall Museum', hindiPhrase: "संग्रहालय (Sangrahaalay)", pronunciation: "San-gra-haa-lay - Museum", memory: "", mood: "" }
             ]
         }
     ];
@@ -85,6 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputContainer = document.getElementById('modal-input-container');
         const inputLabelEl = document.getElementById('modal-input-label');
         const inputField = document.getElementById('modal-input-field');
+        
+        const memoryFieldsContainer = document.getElementById('modal-memory-fields-container');
+        const textareaLabelEl = document.getElementById('modal-textarea-label');
+        const textareaField = document.getElementById('modal-textarea-field');
+        const moodSelectorContainer = document.getElementById('modal-mood-selector-container');
+        
         const iconPickerContainer = document.getElementById('modal-icon-picker-container');
 
         const originalConfirmBtn = document.getElementById('modal-confirm-btn');
@@ -98,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         originalConfirmBtn.parentNode.replaceChild(confirmBtn, originalConfirmBtn);
         originalCancelBtn.parentNode.replaceChild(cancelBtn, originalCancelBtn);
         originalCloseBtn.parentNode.replaceChild(closeBtn, originalCloseBtn);
-
+        
         return new Promise((resolve) => {
             if (currentModalEscHandler) {
                 document.removeEventListener('keydown', currentModalEscHandler);
@@ -109,11 +137,16 @@ document.addEventListener('DOMContentLoaded', () => {
             modalMessageEl.innerHTML = message.replace(/\n/g, '<br>');
 
             inputContainer.classList.add('hidden');
+            memoryFieldsContainer.classList.add('hidden');
             iconPickerContainer.classList.add('hidden');
-            iconPickerContainer.innerHTML = '';
+            
             inputField.value = '';
             inputField.type = 'text';
             inputField.placeholder = '';
+            textareaField.value = '';
+            moodSelectorContainer.innerHTML = '';
+            iconPickerContainer.innerHTML = '';
+            
             confirmBtn.style.display = 'inline-block';
             cancelBtn.style.display = 'inline-block';
 
@@ -121,6 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelBtn.textContent = options.cancelText || 'Cancel';
 
             let selectedIconClass = options.defaultIcon || 'fas fa-map-pin';
+            let selectedMood = options.defaultMood || defaultMoods[0];
+
 
             if (type === 'prompt') {
                 inputContainer.classList.remove('hidden');
@@ -157,6 +192,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     selectedIconClass = noIconEl.dataset.iconClass;
                 });
                 iconPickerContainer.appendChild(noIconEl);
+            } else if (type === 'addMemoryModal' || type === 'viewEditMemoryModal') {
+                memoryFieldsContainer.classList.remove('hidden');
+                textareaLabelEl.textContent = options.textareaLabel || 'Your Reflections:';
+                textareaField.value = options.defaultJournalText || "";
+
+                defaultMoods.forEach(mood => {
+                    const moodEl = document.createElement('span');
+                    moodEl.className = 'mood-option';
+                    moodEl.textContent = mood;
+                    moodEl.dataset.mood = mood;
+                    if (mood === selectedMood) moodEl.classList.add('selected');
+                    moodEl.addEventListener('click', () => {
+                        moodSelectorContainer.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+                        moodEl.classList.add('selected');
+                        selectedMood = mood;
+                    });
+                    moodSelectorContainer.appendChild(moodEl);
+                });
+                setTimeout(() => textareaField.focus(), 50);
+
             } else if (type === 'alert') {
                 cancelBtn.style.display = 'none';
             }
@@ -167,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cleanupAndHide();
                 if (type === 'prompt') resolve(inputField.value);
                 else if (type === 'iconPicker') resolve(selectedIconClass);
+                else if (type === 'addMemoryModal' || type === 'viewEditMemoryModal') resolve({ text: textareaField.value, mood: selectedMood });
                 else resolve(true);
             };
 
@@ -183,6 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (e.key === 'Escape') {
                     if (type === 'alert') onConfirm();
                     else onCancel();
+                } else if (e.key === 'Enter' && type === 'prompt' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+                     if (options.multilinePrompt) {
+                        return; 
+                    }
+                    onConfirm();
                 }
             };
             document.addEventListener('keydown', currentModalEscHandler);
@@ -219,9 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const dayCard = document.createElement('div');
         dayCard.classList.add('day-card');
         dayCard.dataset.dayId = dayData.id;
+        
         const imageHTML = dayData.image ? `
-            <div class="day-image-container">
-                <img src="${dayData.image}" alt="${dayData.title}" loading="lazy">
+            <div class="polaroid-frame shake-active">
+                <img src="${dayData.image}" alt="${dayData.title}" class="polaroid-image" loading="lazy">
+                <p class="polaroid-caption">${dayData.title}</p>
             </div>` : '';
 
         dayCard.innerHTML = `
@@ -260,15 +323,38 @@ document.addEventListener('DOMContentLoaded', () => {
         activityItem.dataset.dayId = dayId;
 
         const iconHtml = activity.icon ? `<i class="icon ${activity.icon}"></i>` : `<i class="icon fas fa-map-pin"></i>`;
+        
+        const languageHtml = (activity.hindiPhrase && activity.pronunciation) ? `
+            <div class="language-info">
+                <span class="hindi-phrase">${activity.hindiPhrase}</span> - 
+                <span class="pronunciation">${activity.pronunciation}</span>
+            </div>
+        ` : '';
+
+        const moodHtml = activity.mood ? `<span class="activity-mood" title="Your mood">${activity.mood}</span>` : '';
+        const memoryBtnText = activity.memory || activity.mood ? "View/Edit Memory" : "Add Memory";
+        const memoryBtnIcon = activity.memory || activity.mood ? "fas fa-book-open" : "fas fa-feather-alt";
+
 
         activityItem.innerHTML = `
-            <span class="drag-handle" title="Drag this note"><i class="fas fa-arrows-up-down-left-right"></i></span>
-            ${iconHtml}
-            <span class="time">${activity.time}</span>
-            <span class="description">${activity.description}</span>
-            <div class="activity-actions">
-                <button class="edit-activity-btn" data-activity-id="${activity.id}" data-day-id="${dayId}" title="Edit this activity"><i class="fas fa-pencil-alt"></i></button>
-                <button class="delete-activity-btn" data-activity-id="${activity.id}" data-day-id="${dayId}" title="Delete this activity"><i class="fas fa-times"></i></button>
+            <div class="activity-main-content">
+                <span class="drag-handle" title="Drag this note"><i class="fas fa-arrows-up-down-left-right"></i></span>
+                ${iconHtml}
+                <span class="time">${activity.time}</span>
+                <span class="description">${activity.description}</span>
+                <div class="activity-actions">
+                    <button class="edit-activity-btn" data-activity-id="${activity.id}" data-day-id="${dayId}" title="Edit this activity"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="delete-activity-btn" data-activity-id="${activity.id}" data-day-id="${dayId}" title="Delete this activity"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="activity-extras">
+                ${languageHtml}
+                <div class="memory-display">
+                    ${moodHtml}
+                    <button class="memory-btn" data-activity-id="${activity.id}" data-day-id="${dayId}" title="${memoryBtnText}">
+                        <i class="${memoryBtnIcon}"></i> ${memoryBtnText}
+                    </button>
+                </div>
             </div>
         `;
         activityItem.addEventListener('dragstart', handleDragStartActivity);
@@ -290,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleDragStartActivity(e) {
-        if (e.target.closest('.delete-activity-btn') || e.target.closest('.edit-activity-btn')) {
+        if (e.target.closest('.delete-activity-btn') || e.target.closest('.edit-activity-btn') || e.target.closest('.memory-btn')) {
             e.preventDefault();
             return;
         }
@@ -401,7 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!activityToMove) {
-            console.error("Data Error: Activity not found in source during drop.");
             if (elementToSettle && elementToSettle.parentNode) elementToSettle.classList.remove('dragging');
             return;
         }
@@ -434,6 +519,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (deleteBtn) deleteBtn.dataset.dayId = targetDayId;
                 const editBtn = elementToSettle.querySelector('.edit-activity-btn');
                 if (editBtn) editBtn.dataset.dayId = targetDayId;
+                const memoryBtn = elementToSettle.querySelector('.memory-btn');
+                if (memoryBtn) memoryBtn.dataset.dayId = targetDayId;
             }
 
             if (activityPlaceholder && activityPlaceholder.parentNode === targetListElement) {
@@ -448,7 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 if (!elementToSettle || !elementToSettle.isConnected) return;
-
                 elementToSettle.classList.add('settling');
                 elementToSettle.addEventListener('animationend', function handleSettleAnimationEnd(event) {
                     if (event.animationName === 'activitySettle' && event.target === elementToSettle) {
@@ -460,7 +546,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 0);
 
         } else {
-            console.error("Data Error: Target day not found during drop.");
             if (sourceDayData && activityToMove && originalSourceActivityIndex > -1) {
                 sourceDayData.activities.splice(originalSourceActivityIndex, 0, activityToMove);
             }
@@ -478,7 +563,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function addDay() {
         const newDayNumber = mockDaysData.length + 1;
-
         const newDayTitle = await showModal('prompt',
             `Add New Day (Day ${newDayNumber})`,
             `Let's plan Day ${newDayNumber}! What will be its theme or title?`,
@@ -546,7 +630,6 @@ document.addEventListener('DOMContentLoaded', () => {
              if (mockDaysData.length === 0) {
                 renderItinerary(); 
             }
-
         }, { once: true });
     }
 
@@ -562,19 +645,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (description === false || description === null) return;
         if (description.trim() === "") { await showModal('alert', 'Missing Description', 'Please describe the activity.'); return; }
 
-        const iconClass = await showModal('iconPicker',
-            `Choose Icon for "${description.substring(0,25)}..."`,
-            `Select an icon that best represents this activity, or choose 'Default'.`,
-            { confirmText: 'Add Activity', defaultIcon: 'fas fa-map-pin' }
-        );
+        const locationName = await showModal('prompt', `Location for "${description.substring(0,20)}..."`, `Enter location name (e.g., Hawa Mahal). This helps with tips.`, { inputLabel: 'Location Name:', defaultValue: "", confirmText: 'Next' });
+        if (locationName === false || locationName === null) return; 
+
+        const iconClass = await showModal('iconPicker', `Choose Icon for "${description.substring(0,20)}..."`, `Select an icon that best represents this activity.`, { confirmText: 'Add Activity', defaultIcon: 'fas fa-map-pin' });
         if (iconClass === false || iconClass === null) return;
 
         const newActivityId = `act${Date.now()}`;
+        
         day.activities.push({
             id: newActivityId,
             time: time.trim(),
             description: description.trim(),
-            icon: iconClass
+            icon: iconClass,
+            locationName: locationName.trim(),
+            hindiPhrase: "नमस्ते (Namaste)",
+            pronunciation: "Na-ma-stay (Hello)",
+            memory: "",
+            mood: ""
         });
         renderSingleDayActivities(dayId);
     }
@@ -585,34 +673,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const activity = day.activities.find(act => act.id === activityIdToEdit);
         if (!activity) return;
 
-        const newTime = await showModal('prompt',
-            `Edit Time for Activity`,
-            `Current time: ${activity.time}. Enter new time:`,
-            { inputLabel: 'New Time (e.g., 10:00 AM):', defaultValue: activity.time, inputType: 'time', confirmText: 'Next' }
-        );
+        const newTime = await showModal('prompt', `Edit Time for Activity`, `Current time: ${activity.time}. Enter new time:`, { inputLabel: 'New Time (e.g., 10:00 AM):', defaultValue: activity.time, inputType: 'time', confirmText: 'Next' });
         if (newTime === false || newTime === null) return;
         if (newTime.trim() === "") { await showModal('alert', 'Missing Time', 'Please provide a time for the activity.'); return; }
 
-
-        const newDescription = await showModal('prompt',
-            `Edit Description for Activity`,
-            `Activity at ${newTime}. Current description:\n"${activity.description}"`,
-            { inputLabel: 'New Description:', defaultValue: activity.description, confirmText: 'Next' }
-        );
+        const newDescription = await showModal('prompt', `Edit Description for Activity`, `Activity at ${newTime}. Current description:\n"${activity.description}"`, { inputLabel: 'New Description:', defaultValue: activity.description, confirmText: 'Next' });
         if (newDescription === false || newDescription === null) return;
         if (newDescription.trim() === "") { await showModal('alert', 'Missing Description', 'Please describe the activity.'); return; }
 
-        const newIconClass = await showModal('iconPicker',
-            `Edit Icon for "${newDescription.substring(0,25)}..."`,
-            `Select a new icon or keep the current one.`,
-            { confirmText: 'Save Changes', defaultIcon: activity.icon || 'fas fa-map-pin' }
-        );
+        const newLocationName = await showModal('prompt', `Edit Location for "${newDescription.substring(0,20)}..."`, `Current: ${activity.locationName || 'None'}. New location name:`, { inputLabel: 'Location Name:', defaultValue: activity.locationName || "", confirmText: 'Next' });
+        if (newLocationName === false || newLocationName === null) return;
+
+        const newIconClass = await showModal('iconPicker', `Edit Icon for "${newDescription.substring(0,20)}..."`, `Select a new icon or keep the current one.`, { confirmText: 'Save Changes', defaultIcon: activity.icon || 'fas fa-map-pin' });
         if (newIconClass === false || newIconClass === null) return;
 
         activity.time = newTime.trim();
         activity.description = newDescription.trim();
         activity.icon = newIconClass;
-
+        activity.locationName = newLocationName.trim();
+        
         renderSingleDayActivities(dayId);
     }
 
@@ -626,6 +705,50 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSingleDayActivities(dayId);
     }
 
+    async function manageActivityMemory(dayId, activityId) {
+        const day = mockDaysData.find(d => d.id === dayId);
+        if (!day) return;
+        const activity = day.activities.find(act => act.id === activityId);
+        if (!activity) return;
+
+        let modalType, modalTitle, modalMessage, confirmText, defaultText, defaultMoodForModal, textareaLabel;
+
+        if (activity.memory || activity.mood) { // View/Edit existing memory
+            modalType = 'viewEditMemoryModal';
+            modalTitle = `View / Edit Memory`;
+            modalMessage = `Activity: ${activity.description.substring(0,40)}...`;
+            confirmText = 'Update Memory';
+            defaultText = activity.memory || "";
+            defaultMoodForModal = activity.mood || defaultMoods[0];
+            textareaLabel = 'Your Saved Reflections:';
+        } else { // Add new memory
+            modalType = 'addMemoryModal';
+            modalTitle = `Add New Memory`;
+            modalMessage = `Activity: ${activity.description.substring(0,40)}...`;
+            confirmText = 'Save Memory';
+            defaultText = "";
+            defaultMoodForModal = defaultMoods[0];
+            textareaLabel = 'Jot Down Your Thoughts:';
+        }
+
+        const result = await showModal(modalType,
+            modalTitle,
+            modalMessage,
+            { 
+                defaultJournalText: defaultText,
+                defaultMood: defaultMoodForModal,
+                textareaLabel: textareaLabel,
+                confirmText: confirmText
+            }
+        );
+
+        if (result) {
+            activity.memory = result.text;
+            activity.mood = result.mood;
+            renderSingleDayActivities(dayId);
+        }
+    }
+
     if (addDayBtn) addDayBtn.addEventListener('click', addDay);
 
     itineraryBoard.addEventListener('click', function(e) {
@@ -633,6 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const addActivityButton = e.target.closest('.add-activity-btn');
         const editActivityButton = e.target.closest('.edit-activity-btn');
         const deleteActivityButton = e.target.closest('.delete-activity-btn');
+        const memoryButton = e.target.closest('.memory-btn');
 
         if (deleteDayButton) {
             deleteDay(deleteDayButton.dataset.dayId);
@@ -642,8 +766,29 @@ document.addEventListener('DOMContentLoaded', () => {
             editActivity(editActivityButton.dataset.dayId, editActivityButton.dataset.activityId);
         } else if (deleteActivityButton) {
             deleteActivityFromDay(deleteActivityButton.dataset.dayId, deleteActivityButton.dataset.activityId);
+        } else if (memoryButton) {
+            manageActivityMemory(memoryButton.dataset.dayId, memoryButton.dataset.activityId);
         }
     });
 
+    function showRandomLocalTip() {
+        if (localTipsData.length === 0) return;
+        const randomIndex = Math.floor(Math.random() * localTipsData.length);
+        localTipTextEl.textContent = localTipsData[randomIndex];
+        localTipBox.classList.remove('hidden');
+
+        setTimeout(() => {
+            localTipBox.classList.add('hidden');
+            setTimeout(showRandomLocalTip, Math.random() * 20000 + 10000); 
+        }, 7000); 
+    }
+
+    if (closeTipBtn) {
+        closeTipBtn.addEventListener('click', () => {
+            localTipBox.classList.add('hidden');
+        });
+    }
+    
     renderItinerary();
+    setTimeout(showRandomLocalTip, 3000); 
 });

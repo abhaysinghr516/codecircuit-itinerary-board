@@ -10,11 +10,15 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&family=Kalam:wght@300;400;700&family=Roboto+Condensed:wght@300;400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&family=Kalam:wght@300;400;700&family=Roboto+Condensed:wght@300;400;700&family=Permanent+Marker&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
+    <img src="asset/camel-sticker.png" alt="Camel Sticker" class="sticker camel-sticker-1">
+    <img src="asset/elephant-sticker.png" alt="Elephant Sticker" class="sticker elephant-sticker-1">
+    <img src="asset/camel-sticker.png" alt="Camel Sticker" class="sticker camel-sticker-2">
+    <img src="asset/elephant-sticker.png" alt="Elephant Sticker" class="sticker elephant-sticker-2">
     <div class="desk-background">
       <div class="desk-item compass-rose-bg">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -68,12 +72,14 @@
         <div class="stain-drip1"></div>
         <div class="stain-drip2"></div>
       </div>
-    </div>    <div class="journal-wrapper">
+    </div>
+    <div class="journal-wrapper">
       <header class="journal-header">
         <h1 class="journal-title">
           Chronicles <span class="ampersand">&</span> Cartography
         </h1>
-        <p class="journal-subtitle">Map out your Jaipur memories.</p>        <div class="cover-selector">
+        <p class="journal-subtitle">Map out your Jaipur memories.</p>
+        <div class="cover-selector">
           <select id="cover-style-selector">
             <option value="default">Classic Parchment</option>
             <option value="vintage">Antique Map</option>
@@ -82,9 +88,7 @@
         </div>
       </header>
 
-      <main id="itinerary-board" class="itinerary-board">
-        <!-- Dynamically generated day "pages" -->
-      </main>
+      <main id="itinerary-board" class="itinerary-board"></main>
 
       <div class="itinerary-controls">
         <button id="add-day-btn" class="control-btn">
@@ -102,7 +106,12 @@
       </footer>
     </div>
 
-    <!-- Modal Structure -->
+    <div id="local-tip-box" class="local-tip-box hidden">
+        <h4 class="local-tip-title">Local Tip!</h4>
+        <p id="local-tip-text" class="local-tip-content"></p>
+        <button id="close-tip-btn" class="close-tip-btn" title="Close tip">×</button>
+    </div>
+
     <div id="custom-modal-overlay" class="modal-overlay hidden">
       <div id="custom-modal" class="modal-dialog">
         <button id="modal-close-btn" class="modal-close-icon" title="Close">
@@ -118,8 +127,15 @@
           <label id="modal-input-label" for="modal-input-field">Input:</label>
           <input type="text" id="modal-input-field" class="modal-input" />
         </div>
+        <div id="modal-memory-fields-container" class="hidden">
+            <div id="modal-textarea-container" class="modal-textarea-area">
+                <label id="modal-textarea-label" for="modal-textarea-field">Text:</label>
+                <textarea id="modal-textarea-field" class="modal-textarea"></textarea>
+            </div>
+            <div id="modal-mood-selector-container" class="modal-mood-selector">
+            </div>
+        </div>
         <div id="modal-icon-picker-container" class="modal-icon-picker hidden">
-          <!-- Icons will be dynamically added -->
         </div>
         <div id="modal-buttons" class="modal-button-container">
           <button id="modal-confirm-btn" class="modal-btn modal-btn-confirm">
