@@ -110,11 +110,68 @@ body::before {
     padding: clamp(30px, 5vw, 50px); border-radius: 3px 10px 10px 3px;
     box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 10px 10px 30px var(--color-shadow-deep);
     position: relative; border: 1px solid #d3c9bc;
+    transition: background-image 0.5s ease, background-color 0.5s ease;
 }
 .journal-wrapper::before {
     content: ''; position: absolute; left: 50%; top: -10px; bottom: -10px; width: 3px;
     background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.15), rgba(0,0,0,0.05));
     border-radius: 2px; transform: translateX(-50%); box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.journal-wrapper.cover-vintage {
+    background-color: #f0e8d8; 
+    background-image: url('https://www.transparenttextures.com/patterns/old-map.png');
+}
+
+.journal-wrapper.cover-modern {
+    background-color: #f5f7fa;
+    background-image: url('https://www.transparenttextures.com/patterns/diamond-upholstery.png');
+    box-shadow: inset 0 0 25px rgba(100,150,200,0.08), 10px 10px 30px var(--color-shadow-deep);
+    border-color: #d8e0e8;
+    background-blend-mode: soft-light;
+}
+
+.journal-wrapper.cover-default {
+    background-color: var(--color-aged-paper);
+    background-image: var(--texture-paper);
+}
+
+/* Cover-specific header styles */
+.cover-vintage .journal-header {
+    border-bottom: 1px solid #c0b091;
+}
+
+.cover-vintage .journal-header::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 15px;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='10' viewBox='0 0 100 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 5 Q 25 9, 50 5 T 100 5' stroke='%23b08d57' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.7;
+}
+
+.cover-vintage .journal-title {
+    color: #795548;
+    text-shadow: 1px 1px 2px rgba(139, 90, 43, 0.2);
+    letter-spacing: 0.02em;
+}
+
+.cover-modern .journal-header {
+    border-bottom: 1px solid #c8d8e8;
+}
+
+.cover-modern .journal-title {
+    background: linear-gradient(135deg, #445566 0%, #667788 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 1px 1px 3px rgba(255,255,255,0.5);
 }
 
 .journal-header {
@@ -123,6 +180,56 @@ body::before {
 }
 .journal-header::after {
     position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%);
+}
+
+.cover-selector {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    margin: 10px;
+}
+
+.cover-selector select {
+    font-family: var(--font-serif-main);
+    padding: 8px 14px;
+    border: 1px solid var(--color-faded-ink);
+    background-color: rgba(255, 255, 250, 0.5);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    color: var(--color-dark-ink);
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-soft), 0 2px 8px rgba(0, 0, 0, 0.05);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%236b5f55' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 36px;
+    outline: none;
+    letter-spacing: 0.3px;
+}
+
+.cover-selector select:hover,
+.cover-selector select:focus {
+    border-color: var(--color-antique-gold);
+    box-shadow: 0 0 0 2px rgba(176, 141, 87, 0.3), 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.cover-selector::before {
+    content: 'Select Cover:';
+    font-family: var(--font-sans-condensed);
+    font-size: 0.8rem;
+    color: var(--color-faded-ink);
+    position: absolute;
+    top: -18px;
+    right: 10px;
+    font-style: italic;
 }
 .journal-title {
     font-family: var(--font-serif-main);
@@ -809,4 +916,15 @@ body::before {
 @media (max-width: 599px) {
     .day-card:hover .day-title-theme h2::before { width: 70%; }
     .day-card:hover .day-title-theme h2::after { width: 75%; }
+}
+
+/* Cover style change animation */
+@keyframes coverChange {
+    0% { opacity: 0.95; transform: scale(0.995); }
+    50% { opacity: 0.98; transform: scale(1.003); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.journal-wrapper.cover-changing {
+    animation: coverChange 0.5s ease-out;
 }

@@ -1,11 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
     const itineraryBoard = document.getElementById('itinerary-board');
     const addDayBtn = document.getElementById('add-day-btn');
+    const coverStyleSelector = document.getElementById('cover-style-selector');
+    const journalWrapper = document.querySelector('.journal-wrapper');
     let draggedActivityElement = null;
     let sourceDayId = null;
     let sourceActivityId = null;
     let activityPlaceholder = null;
     let currentOverList = null;
+      coverStyleSelector.addEventListener('change', (e) => {
+        journalWrapper.classList.add('cover-changing');
+        
+        journalWrapper.classList.remove('cover-default', 'cover-vintage', 'cover-modern');
+        
+        journalWrapper.classList.add(`cover-${e.target.value}`);
+        
+        localStorage.setItem('preferred-cover-style', e.target.value);
+        
+        setTimeout(() => {
+            journalWrapper.classList.remove('cover-changing');
+        }, 500);
+    });
+    
+    const savedCoverStyle = localStorage.getItem('preferred-cover-style') || 'default';
+    coverStyleSelector.value = savedCoverStyle;
+    journalWrapper.classList.add(`cover-${savedCoverStyle}`);
 
     let mockDaysData = [
         {
